@@ -1,0 +1,36 @@
+{
+    "name": "rodrigopedra/laravel-optimus",
+    "description": "Laravel wrapper for Optimus",
+    "keywords": [
+        "laravel",
+        "optimus"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rodrigo Pedra Brum",
+            "email": "rodrigo.pedra@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "RodrigoPedra\\LaravelOptimus\\": "src/LaravelOptimus/"
+        }
+    },
+    "require": {
+        "php": ">=7.0.0",
+        "illuminate/support": "^5.5|^5.6",
+        "illuminate/config": "^5.5|^5.6",
+        "illuminate/database": "^5.5|^5.6",
+        "illuminate/console": "^5.5|^5.6",
+        "jenssegers/optimus": "^0.2.3",
+        "symfony/process": "~3.3|~4.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RodrigoPedra\\LaravelOptimus\\LaravelOptimusServiceProvider"
+            ]
+        }
+    }
+}
