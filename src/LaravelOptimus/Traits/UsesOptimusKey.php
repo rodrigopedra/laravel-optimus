@@ -18,6 +18,10 @@ trait UsesOptimusKey
      */
     public function getRouteKey()
     {
+        if (!$this->exists) {
+            return null;
+        }
+
         $key = parent::getRouteKey();
 
         return app( 'optimus' )->encode( $key );
