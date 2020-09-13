@@ -2,39 +2,40 @@
 
 namespace RodrigoPedra\LaravelOptimus;
 
-use Jenssegers\Optimus\Optimus;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
+use Jenssegers\Optimus\Optimus;
 use RodrigoPedra\LaravelOptimus\Console\Commands\GenerateOptimusKeys;
 
 class LaravelOptimusServiceProvider extends ServiceProvider
 {
-    protected $defer = true;
-
     public function boot()
     {
-        $configPath = $this->app[ 'path.config' ] . DIRECTORY_SEPARATOR . 'optimus.php';
-        $this->publishes( [ __DIR__ . '/../config.php' => $configPath ], 'config' );
-
         if ($this->app->runningInConsole()) {
-            $this->commands( [
+            $this->publishes([__DIR__ . '/../config.php' => $this->app->configPath('optimus.php')], 'config');
+
+            $this->commands([
                 GenerateOptimusKeys::class,
-            ] );
+            ]);
         }
     }
 
     public function register()
     {
-        $this->mergeConfigFrom( __DIR__ . '/../config.php', 'optimus' );
+        $this->mergeConfigFrom(__DIR__ . '/../config.php', 'optimus');
 
-        $this->app->singleton( Optimus::class, function ( $app ) {
-            $prime   = $app[ 'config' ]->get( 'optimus.prime' );
-            $inverse = $app[ 'config' ]->get( 'optimus.inverse' );
-            $random  = $app[ 'config' ]->get( 'optimus.random' );
+        $this->app->singleton(Optimus::class, function (Container $container) {
+            $config = $container->make(Repository::class);
 
-            return new Optimus( $prime, $inverse, $random );
-        } );
+            $prime = $config->get('optimus.prime');
+            $inverse = $config->get('optimus.inverse');
+            $random = $config->get('optimus.random');
 
-        $this->app->alias( Optimus::class, 'optimus' );
+            return new Optimus($prime, $inverse, $random);
+        });
+
+        $this->app->alias(Optimus::class, 'optimus');
     }
 
     public function provides()
